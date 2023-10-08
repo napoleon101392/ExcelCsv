@@ -11,10 +11,9 @@ jobs:
       matrix:
         php: [8.2, 8.1]
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    name: P${{ matrix.php }}
 
+    steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
