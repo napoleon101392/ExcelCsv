@@ -3,9 +3,7 @@
     "description": "Convert CSV/Excel File to array vise versa, can filter to array of data",
     "type": "library",
     "license": "MIT",
-    "require": {
-        "php": "^8.1"
-    },
+    "require": {},
     "autoload": {
         "psr-4": {
             "Napoleon\\ExcelCsv\\": "src"
