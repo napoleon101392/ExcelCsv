@@ -9,12 +9,11 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [8.2, 8.1, 8.0]
+        php: [8.2, 8.1]
+
+    name: P${{ matrix.php }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
