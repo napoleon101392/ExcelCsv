@@ -2,6 +2,7 @@
     "name": "napoleon101392/excel_csv",
     "description": "Convert CSV/Excel File to array vise versa, can filter to array of data",
     "type": "library",
+    "license": "MIT",
     "require": {
         "php": "^8.1"
     },
