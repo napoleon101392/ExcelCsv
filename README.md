@@ -25,9 +25,9 @@ return (new Csv)->file('path/to/file.csv')
   ->data()
   ->filter(['name' => 'jane'])
   ->exact()
-  ->get()
+  ->get();
 
-response: [['name' => 'jane', 'age'  => 36]]
+response: [['Name' => 'Jane', 'Age'  => 36, 'Gender' => 'Female']]
 ```
 
 ## Todo
@@ -36,3 +36,4 @@ response: [['name' => 'jane', 'age'  => 36]]
 - able to calculate
 - Ordering by column
 - can merge data
+- Convert array to csv/excel
