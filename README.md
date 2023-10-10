@@ -1,4 +1,5 @@
 # ExcelCsv
+[![CI](https://github.com/napoleon101392/ExcelCsv/actions/workflows/ci.yml/badge.svg)](https://github.com/napoleon101392/ExcelCsv/actions/workflows/ci.yml)
 
 Usage:
 1. result: ['name' => 'john', 'name' => 'jane']
