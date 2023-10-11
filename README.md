@@ -24,7 +24,6 @@ return (new Csv)->file('path/to/file.csv')->data()->get();
 return (new Csv)->file('path/to/file.csv')
   ->data()
   ->filter(['name' => 'jane'])
-  ->exact()
   ->get();
 
 response: [['Name' => 'Jane', 'Age'  => 36, 'Gender' => 'Female']]
