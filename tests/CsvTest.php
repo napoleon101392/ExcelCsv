@@ -55,7 +55,7 @@ class CsvTest extends TestCase
     {
         $csv = __DIR__ . "/file.csv";
 
-        $csvData = (new Csv())->file($csv)->data()->filter(['City' => 'Topeka'])->exact(false)->get();
+        $csvData = (new Csv())->file($csv)->data()->filter(['City' => 'Topeka'], false)->get();
 
         $this->assertEquals($csvData[0]['State'], ' KS');
         $this->assertTrue(!empty($csvData));
