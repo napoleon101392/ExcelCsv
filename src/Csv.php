@@ -18,6 +18,16 @@ class Csv
     protected $file = null;
 
     /**
+     * filter type
+     * 
+     * true: Exact match of a string
+     * false: String contains
+     * 
+     * @var boolean
+     */
+    protected $exact = true;
+
+    /**
      * To catch filters
      *
      * @var array
@@ -25,11 +35,11 @@ class Csv
     protected $filters = [];
 
     /**
-     * To check string that contains what
+     * Constructed data from file
      *
      * @var array
      */
-    protected $contains = [];
+    protected $data = [];
 
     /**
      * Path to CSV file
@@ -48,9 +58,49 @@ class Csv
         return $this;
     }
 
-    public function contains(array $contains)
+    /**
+     * Construct file
+     *
+     * @return void
+     */
+    public function data(array $data = [])
     {
-        $this->contains = $contains;
+        if (!empty($data)) {
+            $this->data = $data;
+
+            return $this;
+        }
+
+        if (empty($this->file)) {
+            throw new RuntimeException('No CSV file specified.');
+        }
+
+        if (($handle = fopen($this->file, 'r')) === false) {
+            throw new RuntimeException('Error reading CSV file');
+        }
+        
+        $headers = fgetcsv($handle);
+        $data = [];
+        while (($row = fgetcsv($handle)) !== false) {
+            $data[] = array_combine($headers, $row);
+        }
+
+        fclose($handle);
+
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * To set the filter options
+     *
+     * @param boolean $exact
+     * @return void
+     */
+    public function exact(bool $exact)
+    {
+        $this->exact = $exact;
 
         return $this;
     }
@@ -61,9 +111,17 @@ class Csv
      * @param array $filters
      * @return self
      */
-    public function filter(array $filters)
+    public function filter(array $filters, bool $exact = true)
     {
         $this->filters = $filters;
+
+        if (empty($this->data)) {
+            throw new RuntimeException('Data is empty');
+        }
+
+        self::exact($exact);
+
+        self::search();
 
         return $this;
     }
@@ -75,59 +133,7 @@ class Csv
      */
     public function get()
     {
-        if (empty($this->file)) {
-            throw new RuntimeException('No CSV file specified.');
-        }
-
-        if (($handle = fopen($this->file, 'r')) === false) {
-            throw new RuntimeException('Error reading CSV file');
-        }
-        
-        $headers = fgetcsv($handle);
-
-        $data = [];
-        while (($row = fgetcsv($handle)) !== false) {
-            $data[] = array_combine($headers, $row);
-        }
-
-        fclose($handle);
-
-        if (!empty($this->contains)) {
-            return self::checkContains($data);
-        }
-        
-        if (!empty($this->filters)) {
-            return self::search($data);
-        }
-
-        return $data;
-    }
-
-    /**
-     * check if has contains
-     *
-     * @param [type] $data
-     * @return void
-     */
-    private function checkContains($data)
-    {
-        $filteredData = [];
-        foreach ($data as $row) {
-            $conditions = [];
-            foreach($this->contains as $column => $value) {
-                $conditions[] = strstr($row[$column], $value);
-            }
-
-            if (!in_array(false, $conditions)) {
-                $filteredData[] = $row;
-            }
-        }
-
-        if (empty($filteredData)) {
-            throw new RuntimeException('No matching rows found.');
-        }
-
-        return $filteredData;
+        return $this->data;
     }
 
     /**
@@ -136,13 +142,19 @@ class Csv
      * @param array $data
      * @return array
      */
-    private function search($data)
+    private function search()
     {
         $filteredData = [];
-        foreach ($data as $row) {
+
+        foreach ($this->data as $row) {
             $conditions = [];
             foreach($this->filters as $column => $value) {
-                $conditions[] = $row[$column] === $value;
+                if ($this->exact) {
+                    $conditions[] = $row[$column] === $value;
+                    continue;
+                }
+                
+                $conditions[] = strstr($row[$column], $value);
             }
 
             if (!in_array(false, $conditions)) {
@@ -150,10 +162,8 @@ class Csv
             }
         }
 
-        if (empty($filteredData)) {
-            throw new RuntimeException('No matching rows found.');
-        }
+        $this->data = $filteredData;
 
-        return $filteredData;
+        return $this;
     }
 }
