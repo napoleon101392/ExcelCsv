@@ -1,17 +1,17 @@
 {
-    "name": "napoleon101392/excel_csv",
-    "description": "Convert CSV/Excel File to array vise versa, can filter to array of data",
+    "name": "napoleon101392/excel-csv",
+    "description": "Convert CSV/Excel files to arrays and vice versa, with the ability to filter data arrays.",
     "type": "library",
     "license": "MIT",
     "require": {},
     "autoload": {
         "psr-4": {
-            "Napoleon\\ExcelCsv\\": "src"
+            "Napoleon\\ExcelCsv\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Napoleon\\ExcelCsv\\Tests\\": "tests"
+            "Napoleon\\ExcelCsv\\Tests\\": "tests/"
         }
     },
     "authors": [
@@ -21,7 +21,15 @@
         }
     ],
     "require-dev": {
-        "phpunit/phpunit": "^10.4",
+        "phpunit/phpunit": "^8",
         "symfony/var-dumper": "^6.3"
-    }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev"
 }

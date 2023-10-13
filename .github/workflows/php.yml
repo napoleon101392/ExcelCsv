@@ -1,39 +1,27 @@
-name: PHP Composer
+name: PHP Compatibility
 
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-permissions:
-  contents: read
+on: [push]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php-version: [7.2, 7.3, 8.0, 8.1, 8.2]
+
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
       with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, zip
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: composer install
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-    # - name: Run test suite
-    #   run: composer run-script test
+    - name: Run tests
+      run: php vendor/bin/phpunit

@@ -7,7 +7,7 @@ use InvalidArgumentException;
 
 // (new Csv)->data([])->get()
 // (new Csv)->file()->data()->get()
-// (new Csv)->file()->data()->filter([])->exact()->get()
+// (new Csv)->file()->data()->filter([])->get()
 class Csv
 {
     /**
@@ -98,7 +98,7 @@ class Csv
      * @param boolean $exact
      * @return void
      */
-    public function exact(bool $exact = true)
+    public function exact(bool $exact)
     {
         $this->exact = $exact;
 
@@ -111,13 +111,15 @@ class Csv
      * @param array $filters
      * @return self
      */
-    public function filter(array $filters)
+    public function filter(array $filters, bool $exact = true)
     {
         $this->filters = $filters;
 
         if (empty($this->data)) {
-            throw new RuntimeException('Run the data() first');
+            throw new RuntimeException('Data is empty');
         }
+
+        self::exact($exact);
 
         self::search();
 
@@ -147,7 +149,12 @@ class Csv
         foreach ($this->data as $row) {
             $conditions = [];
             foreach($this->filters as $column => $value) {
-                $conditions[] = $this->exact ? $row[$column] === $value : strstr($row[$column], $value);
+                if ($this->exact) {
+                    $conditions[] = $row[$column] === $value;
+                    continue;
+                }
+                
+                $conditions[] = strstr($row[$column], $value);
             }
 
             if (!in_array(false, $conditions)) {
