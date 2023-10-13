@@ -21,12 +21,21 @@ return (new Csv)->file('path/to/file.csv')->data()->get();
 | John      | 18           | Male |
 | Jane      | 36            |   Female |
 ```php
-return (new Csv)->file('path/to/file.csv')
+(new Csv)->file('path/to/file.csv')
   ->data()
-  ->filter(['name' => 'jane'])
+  ->filter(['Name' => 'Jane'])
   ->get();
+// return [['Name' => 'Jane', 'Age'  => 36, 'Gender' => 'Female']]
 
-response: [['Name' => 'Jane', 'Age'  => 36, 'Gender' => 'Female']]
+(new Csv)->file('path/to/file.csv')
+  ->data()
+  ->filter(['Name' => 'J'], false)
+  ->get();
+// return
+// [
+//  ['Name' => 'John', 'Age'  => 18, 'Gender' => 'Male'],
+//  ['Name' => 'Jane', 'Age'  => 36, 'Gender' => 'Female']
+// ]
 ```
 
 ## Todo
